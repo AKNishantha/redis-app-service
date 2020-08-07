@@ -8,9 +8,9 @@ const app = express();
 
 //setup redis client
 const client = redis.createClient({
-        port: process.env.REDIS_PORT,
-        host: process.env.REDIS_HOST,
-        password: process.env.REDIS_PASSWORD,
+    port: process.env.REDIS_PORT,
+    host: process.env.REDIS_HOST,
+    password: process.env.REDIS_PASSWORD,
 });
 
 // redis store configs
@@ -31,7 +31,7 @@ app.get("/azurestudent/get", (req, res) => {
         }else {
             // get data from remote API
             axios
-                .get("http://localhost:5000/azurestudent/get")
+                .get("https://service-three-app.azurewebsites.net/azurestudent/get")
                 .then((azurestudent) => {
                     // save the API response in redis store
                     client.setex(usersRedisKey, 3600, JSON.stringify(azurestudent.data));
