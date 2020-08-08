@@ -2,10 +2,11 @@ const express = require("express");
 const axios = require("axios");
 const redis = require("redis");
 const dotenv = require("dotenv");
+const cors = require("cors");
 dotenv.config();
 
 const app = express();
-
+app.use(cors());
 //setup redis client
 const client = redis.createClient({
     port: process.env.REDIS_PORT,
@@ -50,7 +51,7 @@ app.get("/azurestudent/get", (req, res) => {
 
 // user details endpoint
 app.get("/", (req, res) =>
-    res.send("Welcome to Node.js + Redis boilerplate API.")
+    res.send("Welcome to Node.js + Redis Remote API.")
 );
 
 app.listen(PORT, () => {
