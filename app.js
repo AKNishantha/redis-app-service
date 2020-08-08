@@ -51,7 +51,7 @@ app.get("/azurestudent/get", (req, res) => {
 
 // user details endpoint
 app.get("/", (req, res) =>
-    res.send("Welcome to Node.js + Redis Remote API.")
+    res.send("Welcome to Node.js + Redis With Azure API.")
 );
 
 app.listen(PORT, () => {
