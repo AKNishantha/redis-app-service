@@ -4,6 +4,9 @@ const redis = require("redis");
 const dotenv = require("dotenv");
 const cors = require("cors");
 dotenv.config();
+const multer = require("multer");
+const inMemorySotorage = multer.memoryStorage();
+const uploadStrategy = multer({storage: inMemorySotorage}).single('image');
 
 const app = express();
 app.use(cors());
@@ -26,10 +29,10 @@ app.get("/azurestudent/get", (req, res) => {
     // try to fetch the result from redis
     return client.get(usersRedisKey, (err, azurestudent) => {
         if (azurestudent) {
-            return res.json({ source: "cache", data: JSON.parse(azurestudent)});
+            return res.json({source: "cache", data: JSON.parse(azurestudent)});
 
             // if cache not available call API
-        }else {
+        } else {
             // get data from remote API
             axios
                 .get("https://service-three-app.azurewebsites.net/azurestudent/get")
@@ -38,7 +41,7 @@ app.get("/azurestudent/get", (req, res) => {
                     client.setex(usersRedisKey, 3600, JSON.stringify(azurestudent.data));
 
                     // send JSON response to client
-                    return res.json({ source: "api", data: azurestudent.data });
+                    return res.json({source: "api", data: azurestudent.data});
                 })
                 .catch((error) => {
                     // send error to the client
@@ -53,6 +56,36 @@ app.get("/azurestudent/get", (req, res) => {
 app.get("/", (req, res) =>
     res.send("Welcome to Node.js + Redis With Azure API.")
 );
+
+app.post("/file/upload", uploadStrategy, (req, res) => {
+    try {
+
+        axios       //should fix link
+            .post("https://azurenodefuncapp.azurewebsites.net/api/HttpTrigger1", {
+                filedata: req.file.buffer,
+                filename: req.file.originalname,
+            })
+            .then((info) => {
+                if (info.status === 200) {
+                    return res.status(200).json({
+
+                        message: 'Image Uploaded Successfully!',
+                        statusCode: 200
+                    });
+                } else {
+                    return res.status(200).json({
+                        data: null,
+                        message: 'Image Upload failed!',
+                        statusCode: 400
+                    });
+                }
+            }).catch(e => {
+            console.log(e);
+        });
+
+    } catch (err) {
+    }
+});
 
 app.listen(PORT, () => {
     console.log("Server listening on port:", PORT);

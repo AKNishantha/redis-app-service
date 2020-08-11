@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --max_old_space_size=512 app.js"
+    "start": "node --max_old_space_size=512 app.js",
+    "dev": "nodeman app.js"
   },
   "author": "anura",
   "license": "ISC",
@@ -15,6 +16,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "multer": "^1.4.2",
     "redis": "^3.0.2"
   },
   "devDependencies": {
